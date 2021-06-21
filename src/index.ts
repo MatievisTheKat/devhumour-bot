@@ -16,7 +16,7 @@ const client = new Snoowrap({
   refreshToken: process.env.REFRESH_TOKEN,
 });
 
-new cron.CronJob("* * * * *", run, null, true, "Europe/London");
+new cron.CronJob("*/30 * * * *", run, null, true, "Europe/London");
 run();
 
 function run() {
