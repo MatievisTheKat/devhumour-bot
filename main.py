@@ -22,7 +22,8 @@ def similarity(post1, post2):
 
 
 reddit = praw.Reddit("devhumour-bot")
-rising = reddit.subreddit("ProgrammerHumor").rising()
+rising_iter = reddit.subreddit("ProgrammerHumor").rising(limit=None)
+rising = [_ for _ in rising_iter]
 
 for post in rising:
     path = f"./cache/{post.id}{os.path.splitext(urlparse(post.url).path)[1]}"
@@ -31,9 +32,9 @@ for post in rising:
         with open(path, "wb") as handler:
             handler.write(img)
 
+
 for post in rising:
-    print(post.url)
     if isImage(post.url):
         for otherPost in rising:
-          if post.id != otherPost.id:
-            print(similarity(post, otherPost))
+          if post.id != otherPost.id and isImage(otherPost.url):
+            print(similarity(post, otherPost), post.url, otherPost.url)
