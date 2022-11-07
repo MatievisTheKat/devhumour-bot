@@ -36,5 +36,5 @@ for post in rising:
 for post in rising:
     if isImage(post.url):
         for otherPost in rising:
-          if post.id != otherPost.id and isImage(otherPost.url):
-            print(similarity(post, otherPost), post.url, otherPost.url)
+            if post.id != otherPost.id and isImage(otherPost.url):
+                print(similarity(post, otherPost), post.url, otherPost.url)
