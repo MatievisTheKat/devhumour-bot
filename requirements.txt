@@ -1,3 +1,2 @@
 ImageHash==4.3.1
 praw==7.6.1
-requests==2.28.1
