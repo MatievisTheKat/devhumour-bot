@@ -4,6 +4,12 @@ import requests
 import praw
 from PIL import Image
 import imagehash
+import sqlite3
+
+conn = sqlite3.connect("database.db")
+
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS posts (id VARCHAR(10) NOT NULL, image BLOB NOT NULL);")
 
 
 def isImage(url):
@@ -29,12 +35,5 @@ for post in rising:
     path = f"./cache/{post.id}{os.path.splitext(urlparse(post.url).path)[1]}"
     if isImage(post.url) and not os.path.exists(path):
         img = requests.get(post.url).content
-        with open(path, "wb") as handler:
-            handler.write(img)
-
-
-for post in rising:
-    if isImage(post.url):
-        for otherPost in rising:
-            if post.id != otherPost.id and isImage(otherPost.url):
-                print(similarity(post, otherPost), post.url, otherPost.url)
+        print(img)
+        cursor.execute("INSERT INTO posts VALUES (?, ?);", (post.id, img))
