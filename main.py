@@ -5,12 +5,13 @@ import urllib.request as request
 import imagehash
 import praw
 from PIL import Image
+from datetime import datetime
 
 conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
-cursor.execute(
-    "CREATE TABLE IF NOT EXISTS posts (id VARCHAR(10) UNIQUE NOT NULL, image BLOB NOT NULL);")
+cursor.execute("CREATE TABLE IF NOT EXISTS posts (id VARCHAR(10) UNIQUE NOT NULL, image BLOB NOT NULL, image_url VARCHAR(40) NOT NULL, posted_at TIMESTAMP NOT NULL);")
+cursor.execute("CREATE TABLE IF NOT EXISTS reposts (original_id VARCHAR(10), copy_id VARCHAR(10))")
 
 
 def isImage(url):
@@ -21,7 +22,6 @@ def isImage(url):
 
 
 def similarity(img1, img2):
-    print(img1.size, img2.size)
     hash1 = imagehash.average_hash(img1)
     hash2 = imagehash.average_hash(img2)
     return 100 - (((hash1 - hash2)/64)*100)
@@ -55,10 +55,18 @@ for post in rising:
 
         for dbpost in dbposts:
             dbimg = Image.open(BytesIO(dbpost[1]))
-            print(similarity(img, dbimg))
+            sim = similarity(img, dbimg)
+            if (sim > 95):
+                post_created_at = datetime.fromtimestamp(post.created_utc)
+                dbpost_created_at = datetime.fromtimestamp(dbpost.created_utc)
 
-        cursor.execute("INSERT INTO posts VALUES (?, ?);",
-                       (post.id, bytearray(imgdata)))
+                og = post if post_created_at < dbpost_created_at else dbpost
+                copy = post if post_created_at > dbpost_created_at else dbpost
+
+                print(f"{sim}: og: {og.url}, copy: {copy.url}")
+                cursor.execute("INSERT INTO reposts VALUES (?, ?);", (og.id, copy.id))
+
+        cursor.execute("INSERT INTO posts VALUES (?, ?);", (post.id, bytearray(imgdata)))
 
 
 conn.commit()
