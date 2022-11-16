@@ -48,8 +48,8 @@ rising = [_ for _ in rising_iter]
 
 for post in rising:
     dbposts = cursor.execute("SELECT * FROM posts;").fetchall()
-    print(f"\n\nProcessing '{post.id}'")
     if isImage(post.url) and not findPostInDatabasePosts(post, dbposts):
+        print(f"\n\nProcessing '{post.id}'")
         imgdata = getImgFromURL(post.url)
         img = Image.open(BytesIO(imgdata))
 
