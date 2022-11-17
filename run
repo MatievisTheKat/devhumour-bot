@@ -1,4 +1,5 @@
 #!/usr/bin/sh
+cd ~/dev/devhumour-bot
 timestamp=$(TZ='UTC' date)
 echo $timestamp >> log.txt
-/usr/bin/python ./main.py
+/usr/bin/python main.py
