@@ -1,2 +1,4 @@
 #!/usr/bin/sh
+timestamp=$(TZ='UTC' date)
+echo $timestamp >> log.txt
 /usr/bin/python ./main.py
