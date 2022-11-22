@@ -10,7 +10,7 @@ from datetime import datetime
 conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
-cursor.execute("CREATE TABLE IF NOT EXISTS posts (id VARCHAR(10) UNIQUE NOT NULL, image BLOB NOT NULL, image_url VARCHAR(40) NOT NULL, posted_at TIMESTAMP NOT NULL);")
+cursor.execute("CREATE TABLE IF NOT EXISTS posts (id VARCHAR(10) UNIQUE NOT NULL, image BLOB NOT NULL);")
 cursor.execute("CREATE TABLE IF NOT EXISTS reposts (original_id VARCHAR(10), copy_id VARCHAR(10))")
 
 
