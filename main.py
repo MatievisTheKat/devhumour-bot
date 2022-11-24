@@ -2,7 +2,7 @@ import sqlite3
 from io import BytesIO
 import urllib.request as request
 
-import imagehash
+from imagehash import average_hash
 import praw
 from PIL import Image
 from datetime import datetime
@@ -15,15 +15,12 @@ cursor.execute("CREATE TABLE IF NOT EXISTS reposts (original_id VARCHAR(10), cop
 
 
 def isImage(url):
-    if url.endswith((".png", ".jpeg", ".jpg", ".webp")):
-        return True
-    else:
-        return False
+    return url.endswith((".png", ".jpeg", ".jpg", ".webp"))
 
 
 def similarity(img1, img2):
-    hash1 = imagehash.average_hash(img1)
-    hash2 = imagehash.average_hash(img2)
+    hash1 = average_hash(img1)
+    hash2 = average_hash(img2)
     return 100 - (((hash1 - hash2)/64)*100)
 
 
